@@ -1,0 +1,67 @@
+#boardWrapper{
+    width: 80vh;
+    height: 80vh;
+    margin-left: calc((100vw - 80vh) / 2);
+    display: grid;
+}
+@media (max-width: 1000px) and (orientation:portrait) {
+    body, html{
+        padding: 0;
+        margin: 0;
+    }
+    #boardWrapper{
+        width: 95vw;
+        height: 95vw;
+        margin-left: calc((100vw - 95vw)/2);
+        margin-top: 5vh;
+        display: grid;
+    }
+  }
+
+#board{
+    --board-size: 11;
+    /* border: 2px solid black; */
+    height: 100%;
+    width: 100%;
+    display: inline-grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-gap: 1px;
+    background-color: black;
+    border: 1px solid black;
+    /* box-shadow: 15px 15px 100px 25px black; */
+    
+    
+}
+
+body{
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; */
+    height: 98vh;
+}
+
+.cell{
+    /* border: 1px solid black; */
+    background-color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.playerOnePiece{
+    background-color: red;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+
+}
+.playerTwoPiece{
+    background-color: black;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+
+}
