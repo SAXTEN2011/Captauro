@@ -74,7 +74,7 @@ class BoardTile {
         BoardTile.clearHighlights();
 
         playerMovesLeft--;
-        document.getElementById("movesIndicator").innerHTML = playerMovesLeft;
+        document.getElementById("movesIndicator").innerHTML = playerMovesLeft + " moves left";
         checkMoves();
 
     }
@@ -154,7 +154,7 @@ function checkMoves(){
     if(playerMovesLeft == 0){
         isFirstPlayersTurn = !isFirstPlayersTurn;
         playerMovesLeft = 2;
-        document.getElementById("movesIndicator").innerHTML = playerMovesLeft;
+        document.getElementById("movesIndicator").innerHTML = playerMovesLeft + " moves left";
         if(isFirstPlayersTurn){
             document.getElementById("turnIndicator").innerHTML = "It is the First player's turn";
         }else{
