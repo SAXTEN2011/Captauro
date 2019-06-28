@@ -1,6 +1,6 @@
 let alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 let isFirstPlayersTurn = true;
-let playerMovesLeft = 2;
+let playerMovesLeft = 1; //Starts at 1 because first player's first turn is only one move, even though two is normal
 
 let board = [];
 
