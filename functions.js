@@ -11,6 +11,8 @@ let placeablePieces = 0;
 const EXCHANGE_BACKGROUND_COLOR = "lightgreen";
 const EXCHANGE_BACKGROUND_COLOR_RGB = "rgb(144,238,144)"; //Bad workaround
 
+const DEFAULT_BACKGROUND_COLOR = "white";
+
 class BoardTile {
     constructor(id) {
         this.id = id;
@@ -307,7 +309,7 @@ class BoardTile {
             BoardTile.clearHighlights();
             exchangingTiles.push(this);
             let colorLoop = setInterval(() => {
-                if(this.elem().style.backgroundColor == "white"){
+                if(this.elem().style.backgroundColor == DEFAULT_BACKGROUND_COLOR){
                     this.elem().style.backgroundColor = EXCHANGE_BACKGROUND_COLOR;
                 }
                 if(this.exchangeProgress == 0){
@@ -322,7 +324,7 @@ class BoardTile {
                 this.updateState(0);
                 this.canBeginExchange = false;
                 this.exchangeProgress = 0;
-                this.elem().style.backgroundColor = "white";
+                this.elem().style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
                 placeablePieces = 2;
                 let numOpenTiles = 0;
                 let idDeterminer = (isFirstPlayersTurn) ? alphabet[0] : alphabet[BOARD_SIZE - 1];
@@ -361,7 +363,7 @@ class BoardTile {
         this.cancelExchange = () => {
             this.exchangeProgress = 0;
             exchangingTiles.splice(exchangingTiles.indexOf(this), 1);
-            this.elem().style.backgroundColor = "white";
+            this.elem().style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
         }
 
         this.updateState = (newState, pieceHTML = "") => {
@@ -417,7 +419,7 @@ class BoardTile {
         for (let i = 0; i < BOARD_SIZE; i++) {
             let targetTile = BoardTile.fromId(idDeterminer + alphabet[i]);
             targetTile.elegibleForPlacement = false;
-            targetTile.elem().style.backgroundColor = "white";
+            targetTile.elem().style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
         }
         BoardTile.clearHighlights();
     }
@@ -479,7 +481,7 @@ class BoardTile {
             for (let j = 0; j < BOARD_SIZE; j++) {
                 let tile = board[i][j];
                 if (tile.exchangeProgress === 0) {
-                    tile.elem().style.backgroundColor = "white";
+                    tile.elem().style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
                 }
 
                 for (let p of tile.resetOnHighlightClear) {
@@ -551,7 +553,7 @@ function bindClickEvents() {
     });
 
     document.getElementById("passBtn").addEventListener("click", function() {
-        clearHighlights();
+        BoardTile.clearHighlights();
         chargeMoves(playerMovesLeft);
     })
 }

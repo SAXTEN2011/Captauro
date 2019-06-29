@@ -1,22 +1,15 @@
+:root{
+    --main-bg-color: #ffffff;
+}
+
 #boardWrapper{
     width: 80vh;
     height: 80vh;
-    margin-left: calc((100vw - 80vh) / 2);
+    /* margin-left: calc((100vw - 80vh) / 2); */
     display: grid;
+    grid-row: 2;
 }
-@media (max-width: 1000px) and (orientation:portrait) {
-    body, html{
-        padding: 0;
-        margin: 0;
-    }
-    #boardWrapper{
-        width: 95vw;
-        height: 95vw;
-        margin-left: calc((100vw - 95vw)/2);
-        margin-top: 5vh;
-        display: grid;
-    }
-  }
+
 
 #board{
     --board-size: 11;
@@ -40,6 +33,10 @@ body{
     align-items: center;
     justify-content: center; */
     height: 98vh;
+    background-color: var(--main-bg-color);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 9fr;
 }
 
 .cell{
@@ -65,3 +62,76 @@ body{
     border-radius: 50%;
 
 }
+.passWrapper{
+    display: inline-flex;
+    flex-direction: column-reverse;
+    grid-row: 2;
+}
+#passBtn{
+    width: 50%;
+    margin-left: 50%;
+}
+.titleWrapper{
+    grid-row: 1;
+    grid-column: 2;
+    text-align: center;
+}
+.infoPanel{
+    grid-row: 2;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: baseline;
+}
+
+.infoPanel > h2 {
+    /* float: right; */
+    /* display: block; */
+}
+
+@media (max-width: 1500px) and (orientation:portrait) {
+    body, html{
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        display: inline-grid;
+        grid-template-rows: 1fr 4fr 1fr 1fr;
+        
+    }
+    #boardWrapper{
+        width: 95vw;
+        height: 95vw;
+        margin-left: calc((100vw - 95vw)/2);
+        margin-top: 5vh;
+        display: grid;
+        grid-row: 2;
+    }
+    .infoPanel{
+        text-align: center;
+        grid-row: 3;
+        display: inline-flex;
+        align-items: center;
+    }
+    .passWrapper{
+        grid-row: 4;
+        display: inline-flex;
+        width: auto;
+        margin: 0;
+        justify-content: baseline;
+        align-items: baseline;
+        flex-direction: column;
+    }
+    #passBtn{
+        width: auto;
+        margin-top: 0;
+        margin-left: auto;
+        margin-right: auto;
+        justify-self: baseline;
+        align-self: baseline;
+    }
+    .titleWrapper{
+        text-align: center;
+        grid-row: 1;
+        grid-column: auto;
+    }
+  }
