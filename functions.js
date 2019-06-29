@@ -551,6 +551,7 @@ function bindClickEvents() {
     });
 
     document.getElementById("passBtn").addEventListener("click", function() {
+        clearHighlights();
         chargeMoves(playerMovesLeft);
     })
 }
