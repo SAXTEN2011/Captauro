@@ -9,6 +9,7 @@ let selectedTile = null;
 let placeablePieces = 0;
 
 const EXCHANGE_BACKGROUND_COLOR = "lightgreen";
+const EXCHANGE_BACKGROUND_COLOR_RGB = "rgb(144,238,144)"; //Bad workaround
 
 class BoardTile {
     constructor(id) {
@@ -198,12 +199,14 @@ class BoardTile {
                         for (let ks of keystones) {
                             let color = (this == ks) ? "orange" : "darkorange";
                             ks.elem().style.backgroundColor = color;
+                            highlightedTiles.push(ks);
+                            ks.elegibleToBeLineAttacked = true;
+
                             if (ks.lineData.horiz.length > 1) {
                                 let lineFlow = (ks.lineData.horiz.directions[0].toLowerCase() === "right") ? "left" : "right";
 
                                 let nextMemberOfThisLine = ks.getNeighborInDirection(lineFlow);
-                                highlightedTiles.push(ks);
-                                ks.elegibleToBeLineAttacked = true;
+
                                 while (nextMemberOfThisLine !== null && nextMemberOfThisLine.state === ks.state && nextMemberOfThisLine.exchangeProgress == 0) {
                                     nextMemberOfThisLine.elem().style.backgroundColor = color;
                                     highlightedTiles.push(nextMemberOfThisLine);
@@ -229,7 +232,7 @@ class BoardTile {
                             ks.elegibleToBeLineAttacked = true;
 
                             if (ks.lineData.vert.length > 1) {
-                                console.log(ks);
+                                // console.log(ks);
                                 let lineFlow = (ks.lineData.vert.directions[0].toUpperCase() === "UP") ? "DOWN" : "UP";
                                 let nextMemberOfThisLine = ks.getNeighborInDirection(lineFlow);
                                 highlightedTiles.push(ks);
@@ -285,16 +288,16 @@ class BoardTile {
             tradingPartner.updateState(0);
             BoardTile.clearHighlights();
             selectedTile = null;
-            chargeMoves()
+            chargeMoves();
+            BoardTile.checkWinner();
         }
 
         this.takeLineAttackFrom = (attacker) => {
-            console.log("line attack from " + attacker)
             this.updateState(0);
             BoardTile.clearHighlights();
             selectedTile = null;
             chargeMoves(2);
-
+            BoardTile.checkWinner();
         }
 
         this.beginExchange = () => {
@@ -303,6 +306,15 @@ class BoardTile {
             this.elem().style.backgroundColor = EXCHANGE_BACKGROUND_COLOR;
             BoardTile.clearHighlights();
             exchangingTiles.push(this);
+            let colorLoop = setInterval(() => {
+                if(this.elem().style.backgroundColor == "white"){
+                    this.elem().style.backgroundColor = EXCHANGE_BACKGROUND_COLOR;
+                }
+                if(this.exchangeProgress == 0){
+                    clearInterval(colorLoop);
+                    this.cancelExchange();
+                }
+            }, 50)
         }
 
         this.checkExchange = () => {
@@ -389,13 +401,13 @@ class BoardTile {
 
         if (toTile.id.substr(0, 1) === "a" && !isFirstPlayersTurn) {
             toTile.canBeginExchange = true;
-        } else if (toTile.id.substr(1, 1) === alphabet[BOARD_SIZE - 1] && isFirstPlayersTurn) {
+        } else if (toTile.id.substr(0, 1) === alphabet[BOARD_SIZE - 1] && isFirstPlayersTurn) {
             toTile.canBeginExchange = true;
         } else {
             toTile.canBeginExchange = false;
         }
         chargeMoves();
-
+        BoardTile.checkWinner();
 
     }
 
@@ -415,14 +427,14 @@ class BoardTile {
         let p2Count = 0;
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
-                if(board[i][j].state == 1){
+                if (board[i][j].state == 1) {
                     p1Count++;
-                }else if(board[i][j].state == 2){
+                } else if (board[i][j].state == 2) {
                     p2Count++;
                 }
             }
         }
-        if(p1Count === 0 || p2Count === 0){
+        if (p1Count === 0 || p2Count === 0) {
             let winner = (p1Count === 0) ? "Player 2" : "Player 1";
             alert(winner + " has won!");
         }
@@ -432,7 +444,8 @@ class BoardTile {
     static handleClick = (id) => {
         let tile = BoardTile.fromId(id)
         if (placeablePieces == 0) {
-            if ((tile.state == 1 && isFirstPlayersTurn) || (tile.state == 2 && !isFirstPlayersTurn) && tile.elem().style.backgroundColor !== EXCHANGE_BACKGROUND_COLOR) {
+            if (((tile.state == 1 && isFirstPlayersTurn) || (tile.state == 2 && !isFirstPlayersTurn)) && tile.elem().style.backgroundColor !== EXCHANGE_BACKGROUND_COLOR) {
+                console.log("highlighting")
                 BoardTile.clearHighlights();
                 tile.highlightPossibleActions();
                 selectedTile = tile;
@@ -442,19 +455,20 @@ class BoardTile {
                 tile.tradeWith(selectedTile);
             } else if (tile.elegibleToBeLineAttacked) {
                 tile.takeLineAttackFrom(selectedTile);
-            } else if (tile.canBeginExchange && tile.elem().style.backgroundColor == EXCHANGE_BACKGROUND_COLOR && tile.exchangeProgress == 0) {
+            } else if (tile.canBeginExchange && tile.elem().style.backgroundColor == EXCHANGE_BACKGROUND_COLOR && tile.exchangeProgress === 0) {
+                console.log("Begin exchange");
                 tile.beginExchange();
             } else {
                 console.log("clearing")
-                console.log(tile)
+
                 BoardTile.clearHighlights();
             }
-        }else{
+        } else {
             if (tile.elegibleForPlacement && tile.state == 0) {
                 tile.place();
-            }else{
+            } else {
                 alert("You must place pieces first")
-            } 
+            }
         }
 
     }
@@ -464,7 +478,7 @@ class BoardTile {
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
                 let tile = board[i][j];
-                if (tile.elem().style.backgroundColor !== EXCHANGE_BACKGROUND_COLOR) {
+                if (tile.exchangeProgress === 0) {
                     tile.elem().style.backgroundColor = "white";
                 }
 
@@ -534,6 +548,10 @@ function bindClickEvents() {
                 BoardTile.handleClick(elem.id);
             })
         }
+    });
+
+    document.getElementById("passBtn").addEventListener("click", function() {
+        chargeMoves(playerMovesLeft);
     })
 }
 
