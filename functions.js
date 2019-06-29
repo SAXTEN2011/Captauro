@@ -541,7 +541,7 @@ function bindClickEvents() {
         if (supportsTouch) {
             elem.addEventListener("touchstart", function () {
                 BoardTile.handleClick(elem.id);
-            });
+            }, {passive: true});
 
         } else {
             elem.addEventListener("click", function () {
